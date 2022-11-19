@@ -7,13 +7,13 @@ import (
 	"github.com/alist-org/alist/v3/internal/model"
 )
 
-type BaseResp struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-}
+//type BaseResp struct {
+//	Code    interface{} `json:"code"`
+//	Message string      `json:"message"`
+//}
 
 type TokenResp struct {
-	BaseResp
+	//BaseResp
 	Data struct {
 		Token string `json:"token"`
 	} `json:"data"`
@@ -62,7 +62,7 @@ var _ model.Obj = (*File)(nil)
 //var _ model.Thumb = (*File)(nil)
 
 type Files struct {
-	BaseResp
+	//BaseResp
 	Data struct {
 		InfoList []File `json:"InfoList"`
 		Next     string `json:"Next"`
@@ -70,14 +70,14 @@ type Files struct {
 }
 
 type DownResp struct {
-	BaseResp
+	//BaseResp
 	Data struct {
 		DownloadUrl string `json:"DownloadUrl"`
 	} `json:"data"`
 }
 
 type UploadResp struct {
-	BaseResp
+	//BaseResp
 	Data struct {
 		AccessKeyId     string `json:"AccessKeyId"`
 		Bucket          string `json:"Bucket"`
