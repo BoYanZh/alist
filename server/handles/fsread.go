@@ -250,6 +250,10 @@ func FsGet(c *gin.Context) {
 		common.ErrorResp(c, err, 500)
 		return
 	}
+	if !obj.IsDir() && !user.CanReadFiles() {
+		common.ErrorResp(c, errs.PermissionDenied, 403)
+		return
+	}
 	var rawURL string
 
 	storage, err := fs.GetStorage(reqPath)
