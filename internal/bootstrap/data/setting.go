@@ -124,6 +124,8 @@ func InitialSettings() []model.SettingItem {
 			Type: conf.TypeText, Group: model.GLOBAL, Flag: model.PRIVATE},
 		{Key: conf.OcrApi, Value: "https://api.nn.ci/ocr/file/json", Type: conf.TypeString, Group: model.GLOBAL},
 		{Key: conf.FilenameCharMapping, Value: `{"/": "|"}`, Type: conf.TypeText, Group: model.GLOBAL},
+		{Key: conf.CustomizeNav, Value: `[{"name":"example","url": "http://example.com/", "icon": "https://via.placeholder.com/50"}]`, Type: conf.TypeText, Group: model.GLOBAL},
+		{Key: conf.Carousel, Value: `[{"image": "https://i.picsum.photos/id/508/400/300.jpg?hmac=PDrro78uLoDpfbicJgdzeAzjmjF0MugjK09swV3-F4A", "link": "https://example.com"}, {"image": "https://i.picsum.photos/id/1009/400/300.jpg?hmac=RiufxMMHMiGXyfpw_LZL7VrygCLP4lkMWPFka9yD_r8", "link": "https://example.com"}]`, Type: conf.TypeText, Group: model.GLOBAL},
 
 		// aria2 settings
 		{Key: conf.Aria2Uri, Value: "http://localhost:6800/jsonrpc", Type: conf.TypeString, Group: model.ARIA2, Flag: model.PRIVATE},

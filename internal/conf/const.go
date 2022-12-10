@@ -41,6 +41,8 @@ const (
 	PrivacyRegs         = "privacy_regs"
 	OcrApi              = "ocr_api"
 	FilenameCharMapping = "filename_char_mapping"
+	CustomizeNav        = "customize_nav"
+	Carousel            = "carousel"
 
 	// index
 	SearchIndex = "search_index"
