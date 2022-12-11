@@ -9,7 +9,7 @@ if [ "$1" = "dev" ]; then
   webVersion="dev"
 else
   version=$(git describe --abbrev=0 --tags)
-  webVersion=$(wget -qO- -t1 -T2 "https://api.github.com/repos/alist-org/alist-web/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+  webVersion=$(wget -qO- -t1 -T2 "https://api.github.com/repos/BoYanZh/alist-web/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
 fi
 
 echo "backend version: $version"
@@ -17,24 +17,24 @@ echo "frontend version: $webVersion"
 
 ldflags="\
 -w -s \
--X 'github.com/alist-org/alist/v3/internal/conf.BuiltAt=$builtAt' \
--X 'github.com/alist-org/alist/v3/internal/conf.GoVersion=$goVersion' \
--X 'github.com/alist-org/alist/v3/internal/conf.GitAuthor=$gitAuthor' \
--X 'github.com/alist-org/alist/v3/internal/conf.GitCommit=$gitCommit' \
--X 'github.com/alist-org/alist/v3/internal/conf.Version=$version' \
--X 'github.com/alist-org/alist/v3/internal/conf.WebVersion=$webVersion' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.BuiltAt=$builtAt' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.GoVersion=$goVersion' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.GitAuthor=$gitAuthor' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.GitCommit=$gitCommit' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.Version=$version' \
+-X 'github.com/BoYanZh/alist/v3/internal/conf.WebVersion=$webVersion' \
 "
 
 FetchWebDev() {
-  curl -L https://codeload.github.com/alist-org/web-dist/tar.gz/refs/heads/dev -o web-dist-dev.tar.gz
-  tar -zxvf web-dist-dev.tar.gz
+  curl -L https://codeload.github.com/BoYanZh/web-dist/tar.gz/refs/heads/course -o web-dist-course.tar.gz
+  tar -zxvf web-dist-course.tar.gz
   rm -rf public/dist
-  mv -f web-dist-dev/dist public
-  rm -rf web-dist-dev web-dist-dev.tar.gz
+  mv -f web-dist-course/dist public
+  rm -rf web-dist-course web-dist-course.tar.gz
 }
 
 FetchWebRelease() {
-  curl -L https://github.com/alist-org/alist-web/releases/latest/download/dist.tar.gz -o dist.tar.gz
+  curl -L https://github.com/BoYanZh/alist-web/releases/latest/download/dist.tar.gz -o dist.tar.gz
   tar -zxvf dist.tar.gz
   rm -rf public/dist
   mv -f dist public
@@ -55,6 +55,32 @@ BuildDev() {
 
 BuildDocker() {
   go build -o ./bin/alist -ldflags="$ldflags" -tags=jsoniter .
+}
+
+BuildDevMusl() {
+  rm -rf .git/
+  mkdir -p "build"
+  muslflags="--extldflags '-static -fpic' $ldflags"
+  BASE="https://musl.nn.ci/"
+  FILE=x86_64-linux-musl-cross
+  url="${BASE}${FILE}.tgz"
+  curl -L -o "${FILE}.tgz" "${url}"
+  sudo tar xf "${FILE}.tgz" --strip-components 1 -C /usr/local
+  OS_ARCHE=linux-musl-amd64
+  CGO_ARG=x86_64-linux-musl-gcc
+  os_arch=$OS_ARCHE
+  cgo_cc=$CGO_ARG
+  echo building for ${os_arch}
+  export GOOS=${os_arch%%-*}
+  export GOARCH=${os_arch##*-}
+  export CC=${cgo_cc}
+  export CGO_ENABLED=1
+  go build -o ./build/$appName-$os_arch -ldflags="$muslflags" -tags=jsoniter .
+  # xgo -out "$appName" -ldflags="$ldflags" -tags=jsoniter .
+  # why? Because some target platforms seem to have issues with upx compression
+  upx -9 ./build/$appName-$os_arch
+  # upx -9 ./alist-windows*
+  # mv alist-* build
 }
 
 BuildRelease() {
@@ -116,7 +142,7 @@ if [ "$1" = "dev" ]; then
   if [ "$2" = "docker" ]; then
     BuildDocker
   else
-    BuildDev
+    BuildDevMusl
   fi
 elif [ "$1" = "release" ]; then
   FetchWebRelease

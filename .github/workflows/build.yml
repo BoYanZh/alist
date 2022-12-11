@@ -2,9 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ 'main' ]
-  pull_request:
-    branches: [ 'main' ]
+    branches: [ 'course' ]
 
 jobs:
   build:
@@ -37,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: alist
-          path: dist
+          path: build
