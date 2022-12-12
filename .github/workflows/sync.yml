@@ -1,6 +1,8 @@
 name: Sync Fork
 
 on:
+  push:
+    branches: [ 'main' ]
   schedule:
     - cron: '*/30 * * * *' # every 30 minutes
   workflow_dispatch: # on button click
